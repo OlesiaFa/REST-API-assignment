@@ -1,4 +1,4 @@
-const {ref, get, set, update, remove} = require('firebase/database');
+const {ref, get, set, update, remove, push} = require('firebase/database');
 const db = require('../config/firebase');
 
 //Get all  Users
@@ -37,28 +37,29 @@ const getUsersById= async (req, res) => {
 //Post
 const createUser = async (req, res) => {
   try {
-    const userId = String(req.body.id);
     const userData = {
       name: req.body.name,
-        username: req.body.username,
-        email: req.body.email,       
-        address: {
-            streeet: req.body.address.street,
-            suite: req.body.address.suite,
-            city: req.body.address.city,
-            zipcode: req.body.address.zipcode
-        }
+      username: req.body.username,
+      email: req.body.email,
+      address: {
+        street: req.body.address?.street || '',
+        suite: req.body.address?.suite || '',
+        city: req.body.address?.city || '',
+        zipcode: req.body.address?.zipcode || ''
+      }
     };
 
-    const userRef = ref(db, `/users/${userId}`);
-    await set(userRef, userData);
+    const usersRef = ref(db, 'users');
+    const newUserRef = push(usersRef);
+    await set(newUserRef, userData);
 
-    res.status(201).json({ message: 'User created', id: userId });
+    res.status(201).json({ message: 'User created', id: newUserRef.key });
   } catch (error) {
-    console.error('Error writing to RTDB:', error);
-    res.status(500).json({ error: 'Failed to write data' });
+    console.error('Error writing user to RTDB:', error);
+    res.status(500).json({ error: 'Failed to write user data' });
   }
 };
+
 
 //Update User by Id
 const updateUser = async(req,res) =>{
@@ -75,7 +76,7 @@ const updateUser = async(req,res) =>{
     const updateData = req.body;
     await update(userRef, updateData);
 
-    res.status(200).json('User update')
+    res.status(200).json({message:'User updated'})
   }catch(error){
     console.error('ErrorDeleting user', error);
     res.status(500).json({error: 'Failed to update user'})

@@ -33,15 +33,24 @@ POST /users
 PUT /users/:id
 DELETE /users/:id
 
+
+Income Endpoints:
+a. GET /income - Retrieve all income.
+b. POST /income - Add a new income.
+c. PUT /income/:id - Update an existing income by ID.
+d. DELETE /income/:id - Delete an income by ID.
+Data:
+{
+      "wages": 1400,
+      "secondaryIncome": 700,
+      "interest": 120,       
+      "supportPayment": 40,
+      "others": 100             
+ }
+
+
 Expenses:
 GET /expenses
 POST /expenses
 PUT /expenses/:id
 DELETE /expenses/:id
-
-Income:
-GET /income
-POST /income
-PUT /income/:id
-DELETE /income/:id
-
